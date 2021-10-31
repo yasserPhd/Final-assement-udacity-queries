@@ -1,0 +1,18 @@
+q1
+select BillingCountry, count(*) from Invoice group by 1 order by 2 desc;
+q2
+select BillingCity, sum(Total) as sumInG from Invoice group by 1 order by 2 desc limit 1 ;
+q3
+select I.CustomerId,C.FirstName,C.LastName, sum(L.Quantity*L.UnitPrice) MMoney from Invoice I join InvoiceLine L on I.InvoiceId=L.InvoiceId join Customer C on C.CustomerId=I.CustomerId
+ group by 1 order by 4 desc limit 1;
+q4 
+select C.Email,C.FirstName,C.LastName,G.Name from Customer C join Invoice I on C.CustomerId=I.CustomerId join InvoiceLine L on I.InvoiceId=L.InvoiceId join Track T on L.TrackId=T.TrackId join Genre G on T.GenreId=G.GenreId  where G.Name = 'Rock' group by 1,2,3 ;
+
+
+q5
+
+with Sum_spent as (select C.CustomerId,C.FirstName,C.LastName,C.Country as country ,sum(I.Total) as totalSpent from Customer C join Invoice I on I.CustomerId= C.CustomerId
+  group by 1,2,3,4 order by 5 desc ),
+Max_spent as (select s.Country as country ,max(s.totalSpent) as maxSpent from  Sum_spent s group by 1 order by 2 desc)
+
+ select S.CustomerId,S.FirstName,S.LastName,S.country,S.totalSpent from Sum_spent S join Max_spent M on M.maxSpent=S.totalSpent and S.country = M.country order by 4  ;
